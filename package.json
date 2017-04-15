@@ -99,11 +99,11 @@
         "watcher": "CodeboxIDE/package-watcher",
         "panels": "CodeboxIDE/package-panels",
         "find": "CodeboxIDE/package-find",
-        "git": "CodeboxIDE/package-git",
+        "git": "lcamilo15/package-git",
         "settings": "CodeboxIDE/package-settings",
         "menubar": "CodeboxIDE/package-menubar",
         "image": "CodeboxIDE/package-image",
-        "ctags": "CodeboxIDE/package-ctags"
+        "ctags": "lcamilo15/package-ctags"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"

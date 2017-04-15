@@ -20,11 +20,11 @@
         "express": "3.3.5",
         "socket.io": "0.9.16",
         "loadfire": "1.3.4",
-        "shux": "1.0.0",
+        "shux": "git@github.com:lcamilo15/shux.git#1.0.1",
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6c9934e4f2da7886310397170b6ebaf745833936",
         "vfs-local": "git+https://github.com/FriendCode/vfs-local.git#af6bafede0ccb9fb362a0c280e708648f7363f33",
         "watchr": "2.4.11",
-        "gittle": "0.2.2",
+        "gittle": "git@github.com:lcamilo15/gittle.js.git#0.3.2",
         "uuid": "1.4.1",
         "glob": "3.2.6",
         "temp": "0.6.0",
@@ -43,7 +43,7 @@
         "ctags": "0.11.0",
         "minimatch": "0.2.14",
         "semver": "2.2.1",
-        "bugs": "0.1.0"
+        "bugs": "git@github.com:lcamilo15/bugs.js.git"
     },
     "devDependencies": {
         "grunt-exec": "0.4.5",

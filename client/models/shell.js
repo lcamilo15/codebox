@@ -8,7 +8,7 @@ define([
 
     var Shell = hr.Model.extend({
         defaults: {
-            
+
         },
 
         /*
@@ -19,7 +19,7 @@ define([
 
             this.codebox = this.options.codebox;
             this.shellId = this.options.shellId || _.uniqueId("term");
-            
+
             return this;
         },
 

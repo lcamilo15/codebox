@@ -59,6 +59,7 @@ define([
 
             // Init codebox stream
             this.sessionId = this.options.shellId || _.uniqueId("term");
+
             this.shell = box.openShell({
                 'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getSeconds(),
                 'cwd': this.options.cwd
@@ -122,7 +123,7 @@ define([
             this.$el.css({
                 "font-family": settings.get("font", "monospace"),
                 "font-size": settings.get("size", 13)+'px',
-                "line-height": settings.get("line-height", 1.3)            
+                "line-height": settings.get("line-height", 1.3)
             });
             $(this.term_el).css({
                 'background': this.term.colors[256],

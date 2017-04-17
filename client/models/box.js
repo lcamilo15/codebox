@@ -250,7 +250,7 @@ define([
         setActiveFile: function(path) {
             if (!_.isString(path)) {
                 if (path.isNewfile()) {
-                    path = null; 
+                    path = null;
                 } else {
                     path = path.path();
                 }
@@ -263,7 +263,7 @@ define([
             return this;
         }
     });
-    
+
 
     return Codebox;
 });

@@ -2,6 +2,7 @@
     "name": "cb.files.editor",
     "version": "0.1.1",
     "title": "Code Editor",
+    "private": true,
     "description": "Code Editor with ACE.",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",

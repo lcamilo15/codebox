@@ -26,7 +26,19 @@ function setup(options, imports, register) {
 				'email': data.email
 			};
 		},
-
+		'logout': function(data) {
+			if (!data.email
+			|| !data.token) {
+				return Q.reject(new Error("Need 'token' and 'email' for auth hook"));
+			}
+			var userId = data.email;
+			return {
+				'userId': userId,
+				'name': userId,
+				'token': data.token,
+				'email': data.email
+			};
+		},
 		// Report list of events
 		'events': function() {},
 

@@ -11,9 +11,9 @@ function AuthRPCService(workspace, hooks) {
 
 AuthRPCService.prototype.join = function(args, meta) {
 	var that = this;
-	
+
     meta.req.session.userId = null;
-    
+
 	return this.hooks.use("auth", {
 		'email': args.email,
 		'token': args.token
@@ -27,9 +27,21 @@ AuthRPCService.prototype.join = function(args, meta) {
     });
 };
 
+AuthRPCService.prototype.logout = function(args, meta) {
+    var that = this;
+    var userId = meta.req.session.userId;
+    meta.req.session.userId = null;
+
+    return this.hooks.use("logout", {
+        'email': args.email,
+        'token': args.token,
+        'userid': userId,
+    });
+};
+
 AuthRPCService.prototype.settings = function(args, meta) {
     var that = this;
-    
+
     return this.hooks.use("settings", {
         'settings': args,
         'auth': {

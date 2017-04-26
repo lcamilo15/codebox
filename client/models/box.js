@@ -128,6 +128,23 @@ define([
         },
 
         /**
+         * Logout from the box
+         *
+         * @param {object} authInfos argument for authentication service
+         * @param {User} user
+         */
+        logout: function(authInfo, user) {
+            var that = this;
+            this.user = user || new User();
+            return rpc.execute("auth/logout", authInfo).then(function(info) {
+                that.set("auth", false);
+                return Q(info);
+            }, function(err) {
+                return Q.reject(err);
+            });
+        },
+
+        /**
          * Check if user is logged to the box
          *
          * @return {boolean}

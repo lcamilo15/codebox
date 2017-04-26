@@ -9,6 +9,9 @@ var Gittle = require('gittle');
 
 var pkg = require('../package.json');
 var codebox = require("../index.js");
+var Issuer = require('openid-client').Issuer;
+var exit = require('exit');
+
 
 // Codebox git repo: use to identify the user
 var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."));
@@ -51,6 +54,14 @@ cli.command('run [folder]')
 .action(function(projectDirectory) {
     var that = this;
     var prepare = Q();
+
+    //Gitlab OpenID
+    var wellKnownInfo = JSON.parse(process.env.WELL_KNOWN_INFO);
+    var issuer = new Issuer(wellKnownInfo);
+    var clientInfo = {
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET
+    };
 
     // Codebox.io settings
     that.box = process.env.CODEBOXIO_BOXID;
@@ -115,6 +126,39 @@ cli.command('run [folder]')
             }
         });
     }
+
+    config.public = false;
+    config.hooks = {
+        logout: function(data) {
+            var accessToken = data.token.split(".")[0];
+            var client = new issuer.Client(clientInfo);
+            if (wellKnownInfo.revocation_endpoint) {
+                client.revoke(accessToken) // => Promise
+                  .then(function (response) {
+                    //TODO: Implement something around this
+                  });
+            }
+            return data;
+        },
+        auth: function(data) {
+            if (!data.email || !data.token) {
+                return Q.reject(new Error("Need 'token' and 'email' for auth hook"));
+            }
+            var userId = data.email;
+            var client = new issuer.Client(clientInfo);
+            var accessToken = data.token.split(".")[0];
+
+            return client.userinfo(accessToken).then(function (userinfo) {
+                return {
+                    'userId': userinfo.sub,
+                    'name': userinfo.name,
+                    'token': data.token,
+                    'email': data.email
+                };
+            });
+        }
+    };
+
 
     // Auth user using git
     prepare.fin(function() {

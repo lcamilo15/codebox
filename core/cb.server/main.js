@@ -2,8 +2,17 @@
 var http = require('http');
 var express = require('express');
 var _ = require('lodash');
+var Issuer = require('openid-client').Issuer;
+
+//Gitlab OpenID
+var issuer = new Issuer(JSON.parse(process.env.WELL_KNOWN_INFO));
+var clientInfo = {
+    client_id: process.env.CLIENT_ID,
+    client_secret: process.env.CLIENT_SECRET
+};
 
 function setup(options, imports, register) {
+
     var workspace = imports.workspace;
     var logger = imports.logger.namespace("web");
 
@@ -53,33 +62,39 @@ function setup(options, imports, register) {
 
     // Client-side
     app.get('/', function(req, res, next) {
-        var doRedirect = false;
-        var baseToken = options.defaultToken;
-        var baseEmail = options.defaultEmail;
-
-        if (req.query.email
-        && req.query.token) {
-            // Auth credential: save as cookies and redirect to clean url
-            baseEmail = req.query.email;
-            baseToken = req.query.token;
-            doRedirect = true;
-        }
-        if ((baseToken || baseEmail) && (!req.cookies.autoAuth || doRedirect)) {
-            if (baseEmail) {
-                res.cookie('email', baseEmail, { httpOnly: false });
-            }
-
-            if (baseToken) {
-                res.cookie('token', baseToken, { httpOnly: false })
-            }
-
-            res.cookie('autoAuth', true, { httpOnly: false });
-        }
-
-        if (doRedirect) {
-            return res.redirect("/");
-        }
-        return next();
+if (!req.cookies.openIdCode) {
+    if (!req.query.code) {
+        var client = new issuer.Client(clientInfo);
+        var authURL = client.authorizationUrl({
+          redirect_uri: 'http://localhost:8000',
+          scope: 'openid',
+        });
+        return res.redirect(authURL);
+    } else {
+        var client = new issuer.Client(clientInfo);
+        client.authorizationCallback('http://localhost:8000', req.query) // => Promise
+          .then(function (tokenSet) {
+                var client = new issuer.Client(clientInfo);
+                client.userinfo(tokenSet.access_token) // => Promise
+                .then(function (userinfo) {
+                    res.cookie('email', userinfo.nickname, { httpOnly: false });
+                    res.cookie('token', tokenSet.access_token + '.' + tokenSet.refresh_token, { httpOnly: false }, { maxAge: 100000 });
+                    res.cookie('userId', userinfo.userId);
+                    res.cookie('openIdCode', tokenSet.refresh_token, { httpOnly: false }, { maxAge: 100000 });
+                    return res.redirect("/");
+                });
+          }, function(err) {
+                return res.send(403, {
+                    ok: false,
+                    data: {},
+                    error: "There was a problem while authenticating",
+                    method: req.path,
+                });
+          });
+    }
+} else {
+    return next();
+}
     });
     app.use('/', express.static(__dirname + '/../../client/build'));
 

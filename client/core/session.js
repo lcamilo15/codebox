@@ -58,9 +58,14 @@ define([
 
         // Logout
         exit: function() {
+            box.logout({
+                'email': hr.Cookies.get("email"),
+                'token': hr.Cookies.get("token")
+            });
             hr.Cookies.remove("email");
             hr.Cookies.remove("token");
-            location.reload();
+            hr.Cookies.remove("openIdCode");
+            location = "/?q=" + Date.now();
         }
     };
 });

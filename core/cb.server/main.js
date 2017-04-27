@@ -6,6 +6,7 @@ var Issuer = require('openid-client').Issuer;
 
 //Gitlab OpenID
 var issuer = new Issuer(JSON.parse(process.env.WELL_KNOWN_INFO));
+var redirect_uri = process.env.REDIRECT_URI;
 var clientInfo = {
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET
@@ -66,7 +67,7 @@ if (!req.cookies.openIdCode) {
     if (!req.query.code) {
         var client = new issuer.Client(clientInfo);
         var authURL = client.authorizationUrl({
-          redirect_uri: 'http://localhost:8000',
+          redirect_uri: redirect_uri,
           scope: 'openid',
         });
         return res.redirect(authURL);

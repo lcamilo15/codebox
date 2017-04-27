@@ -73,7 +73,7 @@ if (!req.cookies.openIdCode) {
         return res.redirect(authURL);
     } else {
         var client = new issuer.Client(clientInfo);
-        client.authorizationCallback('http://localhost:8000', req.query) // => Promise
+        client.authorizationCallback(redirect_uri, req.query) // => Promise
           .then(function (tokenSet) {
                 var client = new issuer.Client(clientInfo);
                 client.userinfo(tokenSet.access_token) // => Promise
